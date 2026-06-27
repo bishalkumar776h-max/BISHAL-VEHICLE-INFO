@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 BISHAL VEHICLE INFO</title>
+    <style>
+        /* ─── RESET & BASE ─────────────────────────────────────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #080c1a 0%, #1a1f35 50%, #0d1425 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 150, 255, 0.03), transparent 60%),
+                        radial-gradient(circle at 70% 80%, rgba(100, 0, 255, 0.02), transparent 60%);
+            animation: rotateBg 60s linear infinite;
+            z-index: 0;
+        }
+        @keyframes rotateBg {
+            0% {
+                transform: rotate(0deg) scale(1.5);
+            }
+            100% {
+                transform: rotate(360deg) scale(1.5);
+            }
+        }
+
+        /* ─── PARTICLES ────────────────────────────────────────── */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(100, 180, 255, 0.1);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+        .particle:nth-child(1) { left: 5%; animation-duration: 25s; }
+        .particle:nth-child(2) { left: 15%; animation-duration: 20s; animation-delay: 2s; width: 5px;
+            height: 5px; }
+        .particle:nth-child(3) { left: 30%; animation-duration: 28s; animation-delay: 4s; }
+        .particle:nth-child(4) { left: 45%; animation-duration: 22s; animation-delay: 1s; width: 2px;
+            height: 2px; }
+        .particle:nth-child(5) { left: 60%; animation-duration: 26s; animation-delay: 3s; }
+        .particle:nth-child(6) { left: 75%; animation-duration: 24s; animation-delay: 5s; width: 4px;
+            height: 4px; }
+        .particle:nth-child(7) { left: 88%; animation-duration: 27s; animation-delay: 2s; }
+        .particle:nth-child(8) { left: 95%; animation-duration: 21s; animation-delay: 6s; }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* ─── MAIN CARD ────────────────────────────────────────── */
+        .main-card {
+            position: relative;
+            z-index: 1;
+            max-width: 920px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 44px;
+            padding: 32px 28px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            animation: cardFloat 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @keyframes cardFloat {
+            0% { opacity: 0; transform: translateY(40px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ─── HEADER ───────────────────────────────────────────── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-icon {
+            font-size: 2.2rem;
+            animation: bounceCar 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.2));
+        }
+        @keyframes bounceCar {
+            0%,
+            100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(-3deg); }
+        }
+        .brand-text {
+            color: #fff;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #60a5fa);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+        @keyframes gradientShift {
+            0%,
+            100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .brand-sub {
+            font-size: 0.65rem;
+            color: #6b82a8;
+            letter-spacing: 2.5px;
+            font-weight: 300;
+            -webkit-text-fill-color: #6b82a8;
+        }
+        .rc-badge {
+            background: rgba(96, 165, 250, 0.08);
+            padding: 8px 24px;
+            border-radius: 100px;
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.03);
+            animation: glowPulse 3s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @keyframes glowPulse {
+            0%,
+            100% { box-shadow: 0 0 20px rgba(96, 165, 250, 0.03); }
+            50% { box-shadow: 0 0 50px rgba(96, 165, 250, 0.12); }
+        }
+        .rc-label {
+            color: #8ab4f8;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+        .rc-number {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ─── STATUS ───────────────────────────────────────────── */
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 18px 6px 14px;
+            border-radius: 100px;
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.12);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34d399;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%,
+            100% { opacity: 0.4; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .status-pill span {
+            color: #8de0b0;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .credit-badge {
+            padding: 5px 18px;
+            border-radius: 100px;
+            background: rgba(167, 139, 250, 0.06);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            color: #a78bfa;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .credit-badge strong {
+            color: #c4b5fd;
+        }
+
+        /* ─── SEARCH ───────────────────────────────────────────── */
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #e8edf5;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .search-input::placeholder {
+            color: #4a5f7a;
+        }
+        .search-input:focus {
+            border-color: rgba(96, 165, 250, 0.3);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.05);
+        }
+        .search-btn {
+            padding: 12px 28px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
+        }
+        .search-btn:active {
+            transform: scale(0.96);
+        }
+        .search-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ─── DETAILS GRID ────────────────────────────────────── */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 18px 0 16px;
+        }
+        .detail-item {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 13px 15px 11px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .detail-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .detail-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.06);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .detail-item:hover::before {
+            opacity: 1;
+        }
+        .detail-label {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #6b82a8;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #e8edf5;
+            line-height: 1.3;
+            word-break: break-word;
+            position: relative;
+            z-index: 1;
+        }
+        .detail-value.null {
+            color: #4a5f7a;
+            font-style: italic;
+            font-weight: 300;
+        }
+        .detail-value.na {
+            color: #6b82a8;
+            font-weight: 400;
+        }
+
+        /* ─── FOOTER ───────────────────────────────────────────── */
+        .footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .footer-text {
+            color: #4a5f7a;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+        .footer-text a {
+            color: #7f9fd3;
+            text-decoration: none;
+            transition: color 0.3s;
+            border-bottom: 1px dotted rgba(127, 159, 211, 0.15);
+        }
+        .footer-text a:hover {
+            color: #b3d0ff;
+        }
+        .footer-emoji {
+            display: inline-block;
+            animation: wave 2s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%,
+            100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-10deg); }
+        }
+
+        /* ─── STATES ───────────────────────────────────────────── */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            gap: 18px;
+        }
+        .loading-spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid rgba(96, 165, 250, 0.08);
+            border-top: 3px solid #60a5fa;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: #6b82a8;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+        }
+        .error-state {
+            text-align: center;
+            padding: 35px 20px;
+        }
+        .error-icon {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+        }
+        .error-message {
+            color: #f87171;
+            font-size: 0.95rem;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 12px 28px;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: none;
+            max-width: 90%;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.error {
+            border-color: rgba(248, 113, 113, 0.2);
+        }
+        .toast.success {
+            border-color: rgba(52, 211, 153, 0.2);
+        }
+
+        /* ─── RESPONSIVE ───────────────────────────────────────── */
+        @media (max-width: 600px) {
+            .main-card {
+                padding: 18px 14px 18px;
+                border-radius: 28px;
+            }
+            .brand-text {
+                font-size: 1.2rem;
+            }
+            .brand-icon {
+                font-size: 1.8rem;
+            }
+            .rc-number {
+                font-size: 1.1rem;
+            }
+            .details-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .rc-badge {
+                justify-content: center;
+            }
+            .status-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .credit-badge {
+                text-align: center;
+            }
+            .search-section {
+                flex-direction: column;
+            }
+            .search-btn {
+                justify-content: center;
+            }
+        }
+        @media (max-width: 400px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="main-card" id="app">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="brand">
+                <span class="brand-icon">🚗</span>
+                <div>
+                    <div class="brand-text">BISHAL VEHICLE INFO</div>
+                    <div class="brand-sub">✦ VAHAN SEARCH ENGINE</div>
+                </div>
+            </div>
+            <div class="rc-badge">
+                <span class="rc-label">🔹 RC</span>
+                <span class="rc-number" id="rcNumber">WB38X4922</span>
+            </div>
+        </div>
+
+        <!-- STATUS -->
+        <div class="status-row">
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                <span id="statusText">ACTIVE</span>
+            </div>
+            <div class="credit-badge">
+                👨‍💻 <strong id="creditName">@BISHALPASWAN</strong>
+            </div>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="search-section">
+            <input type="text" class="search-input" id="searchInput" placeholder="Enter RC Number (e.g., WB38X4922)" value="WB38X4922">
+            <button class="search-btn" id="searchBtn">
+                <span>🔍</span> Search
+            </button>
+        </div>
+
+        <!-- DETAILS -->
+        <div id="detailsContainer">
+            <div class="details-grid" id="detailsGrid"></div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <span class="footer-text">🛡️ Data from <a href="#" target="_blank">Vahan Portal</a></span>
+            <span class="footer-text">Made with <span class="footer-emoji">❤️</span> by Bishal</span>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        //  CONFIG - FIXED: Use your actual backend API
+        // ═══════════════════════════════════════════════════════════
+
+        // 🔥 IMPORTANT: Replace with your actual backend URL
+        // If your Flask backend is on Render/Railway/etc:
+        const API_BASE = 'https://your-backend-url.onrender.com/';
+
+        // For local testing:
+        // const API_BASE = 'http://localhost:5000/';
+
+        // ═══════════════════════════════════════════════════════════
+        //  STATE
+        // ═══════════════════════════════════════════════════════════
+
+        let currentData = null;
+        let isLoading = false;
+
+        // ═══════════════════════════════════════════════════════════
+        //  DOM REFS
+        // ═══════════════════════════════════════════════════════════
+
+        const grid = document.getElementById('detailsGrid');
+        const rcNumberEl = document.getElementById('rcNumber');
+        const statusTextEl = document.getElementById('statusText');
+        const creditNameEl = document.getElementById('creditName');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const container = document.getElementById('detailsContainer');
+        const toast = document.getElementById('toast');
+
+        // ═══════════════════════════════════════════════════════════
+        //  HELPERS
+        // ═══════════════════════════════════════════════════════════
+
+        function formatLabel(key) {
+            return key.replace(/([A-Z])/g, ' $1').replace(/'s/g, "'s").trim();
+        }
+
+        function getValueDisplay(value) {
+            if (value === null || value === undefined) return { text: 'Not Available', cls: 'null' };
+            if (value === 'NA' || value === 'N/A' || value === '') return { text: 'N/A', cls: 'na' };
+            return { text: String(value), cls: '' };
+        }
+
+        function showToast(msg, type = 'info', duration = 3000) {
+            toast.textContent = msg;
+            toast.className = 'toast ' + type;
+            // Force reflow
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        function setLoading(state) {
+            isLoading = state;
+            searchBtn.disabled = state;
+            searchBtn.innerHTML = state ? '⏳ Loading...' : '<span>🔍</span> Search';
+            if (state) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">FETCHING VEHICLE DATA...</div>
+                    </div>
+                `;
+            }
+        }
+
+        function showError(msg) {
+            container.innerHTML = `
+                <div class="error-state">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-message">${msg}</div>
+                </div>
+            `;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  RENDER
+        // ═══════════════════════════════════════════════════════════
+
+        function renderData(data) {
+            currentData = data;
+
+            // Update header
+            rcNumberEl.textContent = data.rc_number || 'N/A';
+            const credit = data.credit || 'API DEVELOPER : @BISHALPASWAN';
+            creditNameEl.textContent = credit.replace('API DEVELOPER : ', '').replace('API DEVELOPER :', '').trim();
+
+            // Status
+            const statusMap = {
+                success: '✅ ACTIVE',
+                error: '❌ ERROR',
+                not_found: '⚠️ NOT FOUND'
+            };
+            statusTextEl.textContent = statusMap[data.status] || data.status?.toUpperCase() || 'UNKNOWN';
+
+            // Update status dot color
+            const dot = document.querySelector('.status-dot');
+            if (data.status === 'success') {
+                dot.style.background = '#34d399';
+            } else if (data.status === 'error') {
+                dot.style.background = '#f87171';
+            } else if (data.status === 'not_found') {
+                dot.style.background = '#fbbf24';
+            } else {
+                dot.style.background = '#6b82a8';
+            }
+
+            // Details
+            const details = data.details || {};
+            const order = [
+                'Owner Name', 'Father\'s Name', 'Owner Serial No',
+                'Model Name', 'Maker Model', 'Vehicle Class',
+                'Fuel Type', 'Fuel Norms', 'Registration Date',
+                'Insurance Company', 'Insurance No', 'Insurance Expiry', 'Insurance Upto',
+                'Fitness Upto', 'Tax Upto',
+                'PUC No', 'PUC Upto',
+                'Financier Name',
+                'Registered RTO', 'Address', 'City Name', 'Phone'
+            ];
+
+            grid.innerHTML = '';
+            const rendered = new Set();
+
+            // Render in order
+            order.forEach(key => {
+                if (details.hasOwnProperty(key)) {
+                    rendered.add(key);
+                    const val = details[key];
+                    const display = getValueDisplay(val);
+                    const item = document.createElement('div');
+                    item.className = 'detail-item';
+                    item.innerHTML = `
+                        <span class="detail-label">${formatLabel(key)}</span>
+                        <span class="detail-value ${display.cls}">${display.text}</span>
+                    `;
+                    grid.appendChild(item);
+                }
+            });
+
+            // Render remaining
+            for (const key in details) {
+                if (!rendered.has(key) && details.hasOwnProperty(key)) {
+                    const val = details[key];
+                    const display = getValueDisplay(val);
+                    const item = document.createElement('div');
+                    item.className = 'detail-item';
+                    item.innerHTML = `
+                        <span class="detail-label">${formatLabel(key)}</span>
+                        <span class="detail-value ${display.cls}">${display.text}</span>
+                    `;
+                    grid.appendChild(item);
+                }
+            }
+
+            // If no details
+            if (grid.children.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:30px;color:#6b82a8;">
+                        No details available
+                    </div>
+                `;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  FETCH
+        // ═══════════════════════════════════════════════════════════
+
+        async function fetchVehicleData(rc) {
+            if (!rc || rc.trim().length < 4) {
+                showToast('Please enter a valid RC number', 'error', 3000);
+                return;
+            }
+
+            const rcClean = rc.trim().toUpperCase();
+            setLoading(true);
+
+            try {
+                // ✅ FIX: Using your actual backend API
+                const url = `${API_BASE}?rc_number=${encodeURIComponent(rcClean)}`;
+                console.log('🔍 Fetching:', url);
+
+                const response = await fetch(url, {
+                    signal: AbortSignal.timeout(15000),
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'error') {
+                    throw new Error(data.message || 'API returned error');
+                }
+
+                if (data.status === 'not_found') {
+                    showToast(`No details found for ${rcClean}`, 'error', 4000);
+                    renderData(data);
+                    return;
+                }
+
+                renderData(data);
+                showToast(`✅ Data loaded for ${rcClean}`, 'success', 2000);
+
+            } catch (err) {
+                console.error('❌ Fetch error:', err);
+
+                // More descriptive error
+                let msg = err.message || 'Failed to fetch vehicle data';
+                if (err.name === 'AbortError') {
+                    msg = 'Request timed out. Please try again.';
+                } else if (msg.includes('Failed to fetch')) {
+                    msg = 'Cannot connect to server. Make sure your backend is running at: ' + API_BASE;
+                }
+
+                showError(msg);
+                showToast('❌ ' + msg, 'error', 5000);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  SAMPLE DATA (Fallback - shows instantly)
+        // ═══════════════════════════════════════════════════════════
+
+        const sampleData = {
+            "credit": "API DEVELOPER : @BISHALPASWAN",
+            "details": {
+                "Address": "NA",
+                "City Name": "Asansol WB-38",
+                "Father's Name": "TAPESWAR PASWAN",
+                "Financier Name": null,
+                "Fitness Upto": "08-Sep-2029",
+                "Fuel Norms": "BHARAT STAGE III",
+                "Fuel Type": "DIESEL",
+                "Insurance Company": "SBI General",
+                "Insurance Expiry": "20-Jul-2026",
+                "Insurance No": "3001/A/352699516/0XXXXX",
+                "Insurance Upto": "20-Jul-2026",
+                "Maker Model": "MARUTI SWIFT VDI BS III",
+                "Model Name": "MARUTI SUZUKI INDIA LTD",
+                "Owner Name": "L*L M***N P****N",
+                "Owner Serial No": "Fourth Owner",
+                "PUC No": null,
+                "PUC Upto": "02-Jul-2026",
+                "Phone": "NA",
+                "Registered RTO": "PASCHIM BURDWAN RTO, West Bengal",
+                "Registration Date": "11-Sep-2009",
+                "Tax Upto": "10-Sep-2029",
+                "Vehicle Class": "MOTOR CAR"
+            },
+            "rc_number": "WB38X4922",
+            "status": "success"
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        //  INIT
+        // ═══════════════════════════════════════════════════════════
+
+        // Load sample data immediately
+        renderData(sampleData);
+
+        // ═══════════════════════════════════════════════════════════
+        //  EVENTS
+        // ═══════════════════════════════════════════════════════════
+
+        searchBtn.addEventListener('click', () => {
+            fetchVehicleData(searchInput.value);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                fetchVehicleData(searchInput.value);
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        //  URL PARAMETER DETECTION
+        // ═══════════════════════════════════════════════════════════
+
+        (function detectRCFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const rc = params.get('rc_number');
+            if (rc && rc.trim().length > 3) {
+                searchInput.value = rc.trim().toUpperCase();
+                // Wait for page to render, then fetch
+                setTimeout(() => fetchVehicleData(rc), 600);
+            }
+        })();
+
+        console.log('🚗 BISHAL VEHICLE INFO v2.1 — Fixed');
+        console.log('📌 API_BASE:', API_BASE);
+        console.log('📌 Enter RC number and click Search');
+        console.log('📌 URL: ?rc_number=WB38X4922');
+    </script>
+
+</body>
+</html>
